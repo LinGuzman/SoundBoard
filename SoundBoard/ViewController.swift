@@ -38,10 +38,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return grabaciones.count
     }
     
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell()
+//        let grabacion = grabaciones[indexPath.row]
+//        cell.textLabel?.text = grabacion.nombre
+//        return cell
+//    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let grabacion = grabaciones[indexPath.row]
-        cell.textLabel?.text = grabacion.nombre
+       
+        // Configurar el reproductor de audio temporal para obtener la duración
+        do {
+            let audioPlayer = try AVAudioPlayer(data: grabacion.audio! as Data)
+            let duracion = audioPlayer.duration
+           
+            let minutos = Int(duracion) / 60
+            let segundos = Int(duracion) % 60
+            cell.textLabel?.text = "\(grabacion.nombre ?? "Grabación") - \(String(format: "%02d:%02d", minutos, segundos))"
+        } catch {
+            cell.textLabel?.text = grabacion.nombre
+        }
+       
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
